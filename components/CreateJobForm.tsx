@@ -2,50 +2,69 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
+
+import {
+  JobStatus,
+  JobMode,
+  createAndEditJobSchema,
+  CreateAndEditJobType,
+} from "@/utils/types";
 
 import { Button } from "@/components/ui/button";
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
 
-const formSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-});
+import { CustomFormField, CustomFormSelect } from "./FormComponents";
+import { Field } from "@/components/ui/field";
 
 function CreateJobForm() {
-  // 1. Define your form.
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<CreateAndEditJobType>({
+    resolver: zodResolver(createAndEditJobSchema),
     defaultValues: {
-      username: "",
+      position: "",
+      company: "",
+      location: "",
+      status: JobStatus.Pending,
+      mode: JobMode.FullTime,
     },
   });
 
-  // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
+  function onSubmit(values: CreateAndEditJobType) {
     console.log(values);
   }
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-      <Field>
-        <FieldLabel>Username</FieldLabel>
-        <Input placeholder="shadcn" {...form.register("username")} />
-        <FieldGroup>
-          {form.formState.errors.username && (
-            <p className="text-red-500">
-              {form.formState.errors.username.message}
-            </p>
-          )}
-        </FieldGroup>
-      </Field>
+    <Field {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="bg-muted p-8 rounded"
+      >
+        <h2 className="capitalize font-semibold text-4xl mb-6">add job</h2>
+        <div className="grid gap-0 md:grid-cols-2 lg:grid-cols-3 items-start">
+          <CustomFormField name="position" control={form.control} />
+          <CustomFormField name="company" control={form.control} />
+          <CustomFormField name="location" control={form.control} />
+          <CustomFormSelect
+            name="status"
+            control={form.control}
+            labelText="Status"
+            items={Object.values(JobStatus).join(",")}
+          />
+          <CustomFormSelect
+            name="mode"
+            control={form.control}
+            labelText="Mode"
+            items={Object.values(JobMode).join(",")}
+          />
 
-      <Button type="submit">Submit</Button>
-    </form>
+          <Button
+            type="submit"
+            className="bg-primary text-primary-foreground col-span-full mt-4"
+          >
+            create job
+          </Button>
+        </div>
+      </form>
+    </Field>
   );
 }
+
 export default CreateJobForm;
