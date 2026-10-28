@@ -16,16 +16,11 @@ type CustomFormFieldProps = {
 
 export function CustomFormField({ name, control }: CustomFormFieldProps) {
   return (
-    <Field
-      control={control}
-      name={name}
-      render={({ field }) => (
-        <FieldGroup>
-          <FieldLabel>{name}</FieldLabel>
-          <Input placeholder={name} {...field} />
-        </FieldGroup>
-      )}
-    />
+    <Field>
+      <FieldLabel>{name}</FieldLabel>
+
+      <Input placeholder="shadcn" {...control.register(name)} />
+    </Field>
   );
 }
 
@@ -42,26 +37,20 @@ export function CustomFormSelect({
   labelText,
 }: CustomSelectProps) {
   return (
-    <Field
-      control={control}
-      name={name}
-      render={({ field }) => (
-        <FieldGroup>
-          <FieldLabel>{labelText}</FieldLabel>
-          <Select onValueChange={field.onChange} defaultValue={field.value}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select an option" />
-            </SelectTrigger>
-            <SelectContent>
-              {items.split(",").map((item) => (
-                <SelectItem key={item} value={item}>
-                  {item}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </FieldGroup>
-      )}
-    />
+    <Field>
+      <FieldLabel>{labelText || name}</FieldLabel>
+      <Select {...control.register(name)}>
+        <SelectTrigger>
+          <SelectValue placeholder="Select an option" />
+        </SelectTrigger>
+        <SelectContent>
+          {items.split(",").map((item) => (
+            <SelectItem key={item} value={item}>
+              {item}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </Field>
   );
 }
