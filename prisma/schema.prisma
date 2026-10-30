@@ -11,3 +11,14 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model Job {
+  id        String   @id @default(cuid())
+  position  String
+  company   String
+  location  String?
+  status    String   @default("pending")
+  jobType   String   @default("full-time")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
